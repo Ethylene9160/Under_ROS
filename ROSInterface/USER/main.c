@@ -36,6 +36,9 @@ int main(void)
 {
     systemInit(); //Hardware initialization //硬件初始化
 
+
+    
+    //return 0;
     //Create the start task //创建开始任务
     xTaskCreate((TaskFunction_t )start_task,            //Task function   //任务函数
                 (const char*    )"start_task",          //Task name       //任务名称
@@ -45,7 +48,7 @@ int main(void)
                 (TaskHandle_t*  )&StartTask_Handler);   //Task handle     //任务句柄
     vTaskStartScheduler();  //Enables task scheduling //开启任务调度
 }
-
+    
 //Start task task function //开始任务任务函数
 void start_task(void *pvParameters)
 {

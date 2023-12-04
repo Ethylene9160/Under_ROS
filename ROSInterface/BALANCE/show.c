@@ -83,47 +83,55 @@ void oled_show(void)
 	//Display the target speed and current speed of motor A
 	//显示电机A的目标速度和当前速度
 	OLED_ShowString(0,10,"A");
-	if( MOTOR_A.Target<0)	OLED_ShowString(15,10,"-"),
-												OLED_ShowNumber(20,10,-MOTOR_A.Target*1000,5,12);
-	else                 	OLED_ShowString(15,10,"+"),
-												OLED_ShowNumber(20,10, MOTOR_A.Target*1000,5,12); 
+
+	//AAAAAAAAAAA:打印voltage和robot_mode_check_flag。
+	// OLED_ShowString(15,10,"-"),
+
+	//second line:								
+	// if( MOTOR_A.Target<0)	OLED_ShowString(15,10,"-"),
+	// 											OLED_ShowNumber(20,10,-MOTOR_A.Target*1000,5,12);
 	
-	if( MOTOR_A.Encoder<0)OLED_ShowString(60,10,"-"),
-												OLED_ShowNumber(75,10,-MOTOR_A.Encoder*1000,5,12);
-	else                 	OLED_ShowString(60,10,"+"),
-												OLED_ShowNumber(75,10, MOTOR_A.Encoder*1000,5,12);
+	// else                 	OLED_ShowString(15,10,"+"),
+	// 											OLED_ShowNumber(20,10, MOTOR_A.Target*1000,5,12); 
+	
+	
+	// if( MOTOR_A.Encoder<0)OLED_ShowString(60,10,"-"),
+	// 											OLED_ShowNumber(75,10,-MOTOR_A.Encoder*1000,5,12);
+	// else                 	OLED_ShowString(60,10,"+"),
+	// 											OLED_ShowNumber(75,10, MOTOR_A.Encoder*1000,5,12);
 	
 	
 	//The third line of the display displays the content//
 	//显示屏第3行显示内容//	
 	//Display the target speed and current speed of motor B
 	//显示电机B的目标速度和当前速度
-	OLED_ShowString(0,20,"B");		
-	if( MOTOR_B.Target<0)	OLED_ShowString(15,20,"-"),
-												OLED_ShowNumber(20,20,-MOTOR_B.Target*1000,5,12);
-	else                 	OLED_ShowString(15,20,"+"),
-												OLED_ShowNumber(20,20, MOTOR_B.Target*1000,5,12); 
+	// OLED_ShowString(0,20,"B");	
+
+	// if( MOTOR_B.Target<0)	OLED_ShowString(15,20,"-"),
+	// 											OLED_ShowNumber(20,20,-MOTOR_B.Target*1000,5,12);
+	// else                 	OLED_ShowString(15,20,"+"),
+	// 											OLED_ShowNumber(20,20, MOTOR_B.Target*1000,5,12); 
 	
-	if( MOTOR_B.Encoder<0)OLED_ShowString(60,20,"-"),
-												OLED_ShowNumber(75,20,-MOTOR_B.Encoder*1000,5,12);
-	else                 	OLED_ShowString(60,20,"+"),
-												OLED_ShowNumber(75,20, MOTOR_B.Encoder*1000,5,12);
+	// if( MOTOR_B.Encoder<0)OLED_ShowString(60,20,"-"),
+	// 											OLED_ShowNumber(75,20,-MOTOR_B.Encoder*1000,5,12);
+	// else                 	OLED_ShowString(60,20,"+"),
+	// 											OLED_ShowNumber(75,20, MOTOR_B.Encoder*1000,5,12);
 	
 	
 	//The fourth line of the display displays the content//
 	//显示屏第4行显示内容//
 	//Display the target speed and current speed of motor C
 	//显示电机C的目标速度和当前速度
-	OLED_ShowString(0,30,"C");
-	if( MOTOR_C.Target<0)	OLED_ShowString(15,30,"-"),
-												OLED_ShowNumber(20,30,- MOTOR_C.Target*1000,5,12);
-	else                 	OLED_ShowString(15,30,"+"),
-												OLED_ShowNumber(20,30,  MOTOR_C.Target*1000,5,12); 
+	// OLED_ShowString(0,30,"C");
+	// if( MOTOR_C.Target<0)	OLED_ShowString(15,30,"-"),
+	// 											OLED_ShowNumber(20,30,- MOTOR_C.Target*1000,5,12);
+	// else                 	OLED_ShowString(15,30,"+"),
+	// 											OLED_ShowNumber(20,30,  MOTOR_C.Target*1000,5,12); 
 		
-	if( MOTOR_C.Encoder<0)OLED_ShowString(60,30,"-"),
-												OLED_ShowNumber(75,30,-MOTOR_C.Encoder*1000,5,12);
-	else                 	OLED_ShowString(60,30,"+"),
-												OLED_ShowNumber(75,30, MOTOR_C.Encoder*1000,5,12);
+	// if( MOTOR_C.Encoder<0)OLED_ShowString(60,30,"-"),
+	// 											OLED_ShowNumber(75,30,-MOTOR_C.Encoder*1000,5,12);
+	// else                 	OLED_ShowString(60,30,"+"),
+	// 											OLED_ShowNumber(75,30, MOTOR_C.Encoder*1000,5,12);
 	
 	//Line 5 of the display displays the content//
 	//显示屏第5行显示内容//

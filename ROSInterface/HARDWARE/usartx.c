@@ -349,7 +349,7 @@ int USART1_IRQHandler(void)
 		Usart_Receive = USART_ReceiveData(USART1);//Read the data //读取数据
 		if(Time_count<CONTROL_DELAY)
 			// Data is not processed until 25 seconds after startup
-		  //开机25秒前不处理数据
+		  	//开机25秒前不处理数据
 			return 0;	//前期不进入中断
 		
 		//Fill the array with serial data
@@ -358,6 +358,9 @@ int USART1_IRQHandler(void)
 		
 		//Ensure that the first data in the array is FRAME_HEADER
 		//确保数组第一个数据为FRAME_HEADER
+		//OLED_ShowString(15,10,"-");
+		//pass 
+		
 		if(Usart_Receive == FRAME_HEADER||Count>0) 
 			Count++; 
 		else 
@@ -365,6 +368,7 @@ int USART1_IRQHandler(void)
 		
 		if (Count == 11) //Verify the length of the packet //验证数据包的长度
 		{   
+				//OLED_ShowNumber(20,10,5555,5,12);
 				Count=0; //Prepare for the serial port data to be refill into the array //为串口数据重新填入数组做准备
 				if(Receive_Data.buffer[10] == FRAME_TAIL) //Verify the frame tail of the packet //验证数据包的帧尾
 				{

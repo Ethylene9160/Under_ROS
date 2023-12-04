@@ -5,6 +5,8 @@
 #include "sys.h"
 #include "system.h"
 
+#include "show.h"
+
 #define DATA_STK_SIZE   512 
 #define DATA_TASK_PRIO  4
 

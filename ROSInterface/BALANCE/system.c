@@ -186,7 +186,7 @@ void systemInit(void)
 	
 	//Initialize the model remote control interface		
 	//初始化航模遥控接口
-		TIM1_Cap_Init(9999,168-1);  //高级定时器TIM1的频率为168M
+		//TIM1_Cap_Init(9999,168-1);  //高级定时器TIM1的频率为168M
 	//Initialize the hardware interface to the PS2 controller
 	//初始化与PS2手柄连接的硬件接口
 	PS2_Init();

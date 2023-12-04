@@ -83,6 +83,7 @@ Output  : none
 **************************************************************************/
 void Balance_task(void *pvParameters)
 {
+    static int my_counter = 0;
     u32 lastWakeTime = getSysTickCnt();
     while(1)
     {
@@ -130,6 +131,7 @@ void Balance_task(void *pvParameters)
         }
         else if(CONTROL_DELAY+350<Time_count && Time_count<CONTROL_DELAY+380) 
 		{
+
 			check_end=1;
 			Drive_Motor(0,0,0); //The stop forward control is completed //检测完成停止前进控制
 		}
@@ -137,6 +139,9 @@ void Balance_task(void *pvParameters)
         //If there is no abnormity in the battery voltage, and the enable switch is in the ON position,
         //and the software failure flag is 0, or the model detection marker is 0
         //如果电池电压不存在异常，而且使能开关在ON档位，而且软件失能标志位为0，或者型号检测标志位为0
+        OLED_ShowNumber(20,10,Turn_Off(Voltage),5,12);
+        OLED_ShowNumber(20,20,robot_mode_check_flag,5,12);
+        //robot_mode_check_flag=0;
         if(Turn_Off(Voltage)==0&&robot_mode_check_flag==0)
         {
             //Speed closed-loop control to calculate the PWM value of each motor,
@@ -153,11 +158,12 @@ void Balance_task(void *pvParameters)
 #if _4WD
             //Set different PWM control polarity according to different car models
             //根据不同小车型号设置不同的PWM控制极性
-
+            // my_counter += 1;
             if (Car_Mode==0||Car_Mode==1||Car_Mode==2||Car_Mode==3)
                 Set_Pwm( MOTOR_A.Motor_Pwm, MOTOR_B.Motor_Pwm, MOTOR_C.Motor_Pwm, MOTOR_D.Motor_Pwm);  //MD36电机系列
             else
                 Set_Pwm(-MOTOR_A.Motor_Pwm,-MOTOR_B.Motor_Pwm,-MOTOR_C.Motor_Pwm,-MOTOR_D.Motor_Pwm);  //MD60电机系列
+            // OLED_ShowNumber(20,30,my_counter,5,12);
 
 
 
@@ -179,6 +185,7 @@ void Balance_task(void *pvParameters)
 Function: Assign a value to the PWM register to control wheel speed and direction
 Input   : PWM
 Output  : none
+@Param  : motor_a, motor_b, motor_c, motor_d
 函数功能：赋值给PWM寄存器，控制车轮转速与方向
 入口参数：PWM
 返回  值：无
@@ -191,6 +198,9 @@ void Set_Pwm(int motor_a,int motor_b,int motor_c,int motor_d)
     else 	            AIN1=1,		AIN2=0;
     //Motor speed control
     //电机转速控制
+    // OLED_ShowNumber(20,30,motor_a*A,5,12);
+    // TIM_SetCompare4(TIM8,2000);
+    // return;
     TIM_SetCompare4(TIM8,myabs(motor_a*A));
 
     if(motor_b>0)			BIN1=0,		BIN2=1;
@@ -265,9 +275,13 @@ Output  : Whether control is allowed, 1: not allowed, 0 allowed
 **************************************************************************/
 u8 Turn_Off( int voltage)
 {
+    //return 0;
+    //return Flag_Stop;
     u8 temp;
     //static int stop_count, enable_count;
-    if(voltage<20||EN==0||Flag_Stop==1)
+
+    if(voltage < MIN_POWER_VOLTAGE||EN==0||Flag_Stop==1)
+    // if(0||EN==0||Flag_Stop==1)
     {
         temp=1;
         PWMA=0;
@@ -415,8 +429,11 @@ int Incremental_PI_D (float Encoder,float Target)
     static float Bias,Pwm,Last_bias;
     Bias=Target-Encoder; //Calculate the deviation //计算偏差
     Pwm+=Velocity_KP*(Bias-Last_bias)+Velocity_KI*Bias;
-    if(Pwm>16800)Pwm=16800;
-    if(Pwm<-16800)Pwm=-16800;
+    // if(Pwm>16800)Pwm=16800;
+    // if(Pwm<-16800)Pwm=-16800;
+    if(Pwm>MAX_PWM_VALUE)Pwm=MAX_PWN_VALUE;
+    if(Pwm<-MAX_PWN_VALUE)Pwm=-MAX_PWN_VALUE;
+
     Last_bias=Bias; //Save the last deviation //保存上一次偏差
 	
 	if( start_clear ) 
@@ -689,10 +706,10 @@ void Get_Velocity_Form_Encoder(void)
 	
     //The encoder converts the raw data to wheel speed in m/s
     //编码器原始数据转换为车轮速度，单位m/s
-    MOTOR_A.Encoder= Encoder_A_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
-    MOTOR_B.Encoder= Encoder_B_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
-    MOTOR_C.Encoder= Encoder_C_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
-    MOTOR_D.Encoder= Encoder_D_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
+    MOTOR_A.Encoder = Encoder_A_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
+    MOTOR_B.Encoder = Encoder_B_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
+    MOTOR_C.Encoder = Encoder_C_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
+    MOTOR_D.Encoder = Encoder_D_pr*CONTROL_FREQUENCY*Wheel_perimeter/Encoder_precision;
 }
 /**************************************************************************
 Function: Smoothing the three axis target velocity
@@ -777,26 +794,34 @@ void robot_mode_check(void)
 			//累计值出现了倒退，说明电机控制出现异常，通常情况是电机驱动电源接线与电机不对应+编码器接线不对应 两种错误叠加的结果
 			if( check_a<last_a-1000 || check_b<last_b-1000 || check_c < last_c-1000 || check_d <last_d-1000 )	
 			{
+                
 				times++;
-				if( times>2 ) robot_mode_check_flag=1,LED_G=0;
+				//if( times>2 ) robot_mode_check_flag=1,LED_G=0;
 			}
 			last_a = check_a,last_b = check_b,last_c = check_c,last_d = check_d;
 			
 			//若存在负数，说明存在方向相反的情况：错误类型为：车型选错、驱动接线错误或编码器接线错误
+            //to check
 			if( check_a<-3000 ||check_b<-3000 ||check_c<-3000 ||check_d<-3000 ) robot_mode_check_flag=1,LED_G=0;
 		}
 
 		//拥有一定pwm参数值后，若编码器数据不变。错误类型为：编码器未接线、驱动未接线或负责超重
-		if(float_abs(MOTOR_A.Motor_Pwm)>5500 && check_a<500) robot_mode_check_flag=1,LED_B=0;	
-		if(float_abs(MOTOR_B.Motor_Pwm)>5500 && check_b<500) robot_mode_check_flag=1,LED_B=0;	
-		if(float_abs(MOTOR_C.Motor_Pwm)>5500 && check_c<500) robot_mode_check_flag=1,LED_B=0;
-		if(float_abs(MOTOR_D.Motor_Pwm)>5500 && check_d<500) robot_mode_check_flag=1,LED_B=0;
+		// if(float_abs(MOTOR_A.Motor_Pwm)>5500 && check_a<500) robot_mode_check_flag=1,LED_B=0;	
+		// if(float_abs(MOTOR_B.Motor_Pwm)>5500 && check_b<500) robot_mode_check_flag=1,LED_B=0;	
+		// if(float_abs(MOTOR_C.Motor_Pwm)>5500 && check_c<500) robot_mode_check_flag=1,LED_B=0;
+		// if(float_abs(MOTOR_D.Motor_Pwm)>5500 && check_d<500) robot_mode_check_flag=1,LED_B=0;
+
+        
+		if(float_abs(MOTOR_A.Motor_Pwm)>MAX_PWN_VALUE && check_a<500) robot_mode_check_flag=1,LED_B=0;	
+		if(float_abs(MOTOR_B.Motor_Pwm)>MAX_PWN_VALUE && check_b<500) robot_mode_check_flag=1,LED_B=0;	
+		if(float_abs(MOTOR_C.Motor_Pwm)>MAX_PWN_VALUE && check_c<500) robot_mode_check_flag=1,LED_B=0;
+		if(float_abs(MOTOR_D.Motor_Pwm)>MAX_PWN_VALUE && check_d<500) robot_mode_check_flag=1,LED_B=0;
 		
 		//最后防线，正常0.1m/s速度无法到达的PWM数值，错误类型：编码器A、B接反或者C、D接反、或者负载已经超出电机能承受的范围
 		if( float_abs(MOTOR_A.Motor_Pwm)>ERROR_PWM||float_abs(MOTOR_B.Motor_Pwm)>ERROR_PWM||\
 			 float_abs(MOTOR_C.Motor_Pwm)>ERROR_PWM||float_abs(MOTOR_D.Motor_Pwm)>ERROR_PWM )
 		{
-			robot_mode_check_flag = 1;
+			//robot_mode_check_flag = 1;
 			LED_B=1,LED_G=1;
 		}
 		
@@ -807,10 +832,10 @@ void robot_slefcheck(void)
 {
 	if( smooth_control.VX==0&&smooth_control.VZ==0 )
 	{
-		if( MOTOR_A.Motor_Pwm> 16000&&MOTOR_B.Motor_Pwm<-16000 ||\
-            MOTOR_A.Motor_Pwm<-16000&&MOTOR_B.Motor_Pwm> 16000 ||\
-			MOTOR_C.Motor_Pwm> 16000&&MOTOR_D.Motor_Pwm<-16000 ||\
-            MOTOR_C.Motor_Pwm<-16000&&MOTOR_D.Motor_Pwm> 16000  )
+		if( MOTOR_A.Motor_Pwm> MAX_PWN_VALUE && MOTOR_B.Motor_Pwm<-MAX_PWN_VALUE ||\
+            MOTOR_A.Motor_Pwm<-MAX_PWN_VALUE && MOTOR_B.Motor_Pwm> MAX_PWN_VALUE ||\
+			MOTOR_C.Motor_Pwm> MAX_PWN_VALUE && MOTOR_D.Motor_Pwm<-MAX_PWN_VALUE ||\
+            MOTOR_C.Motor_Pwm<-MAX_PWN_VALUE && MOTOR_D.Motor_Pwm> MAX_PWN_VALUE  )
 		{
 			robot_mode_check_flag = 1;
 		}

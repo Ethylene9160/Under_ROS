@@ -1,5 +1,9 @@
 #ifndef __BALANCE_H
-#define __BALANCE_H			  	 
+#define __BALANCE_H		
+
+#define MIN_POWER_VOLTAGE 7	  
+#define MAX_PWN_VALUE 5500
+
 #include "sys.h"
 #include "system.h"
 #define BALANCE_TASK_PRIO		4     //Task priority //任务优先级
@@ -10,6 +14,8 @@
 #define X_PARAMETER    (sqrt(3)/2.f)               
 #define Y_PARAMETER    (0.5f)    
 #define L_PARAMETER    (1.0f)
+
+
 
 extern int A,B,C,DD;
 extern u8 command_lost_count;//串口、CAN控制命令丢失时间计数，丢失1秒后停止控制
@@ -36,5 +42,11 @@ void robot_mode_check(void);
 void Smooth_control(float vx,float vy,float vz);
 void auto_pwm_clear(void);
 void robot_slefcheck(void);
+// #define getAbs(x) _Generic((x),\
+//     int:int_abs(x,y),\
+//     float:float_abs(x,y),\
+//     u32:myabs(x),\
+
+//     default:unsupport())
 #endif  
 
