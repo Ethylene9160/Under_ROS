@@ -1,4 +1,5 @@
 #include "balance.h"
+#include"usartx.h"
 
 //Whether the robot model is incorrectly marked
 //机器人型号是否错误标志位
@@ -500,6 +501,7 @@ void Get_RC(void)
         Move_Z=0;
         break;
     }
+  
 
     if     (Flag_Left ==1)  Move_Z= PI/2*(RC_Velocity/500); //left rotation  //左自转
     else if(Flag_Right==1)  Move_Z=-PI/2*(RC_Velocity/500); //right rotation //右自转
@@ -802,7 +804,7 @@ void robot_mode_check(void)
 			
 			//若存在负数，说明存在方向相反的情况：错误类型为：车型选错、驱动接线错误或编码器接线错误
             //to check
-			if( check_a<-3000 ||check_b<-3000 ||check_c<-3000 ||check_d<-3000 ) robot_mode_check_flag=1,LED_G=0;
+			//if( check_a<-3000 ||check_b<-3000 ||check_c<-3000 ||check_d<-3000 ) robot_mode_check_flag=1,LED_G=0;
 		}
 
 		//拥有一定pwm参数值后，若编码器数据不变。错误类型为：编码器未接线、驱动未接线或负责超重

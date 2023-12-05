@@ -73,6 +73,20 @@ void usart1_send(u8 data);
 void usart4_send(u8 data);
 void usart3_send(u8 data);
 u8 Check_Sum(unsigned char Count_Number,unsigned char Mode);
+
+void log_(u8*array, int size);
+
+/**
+ * 一个自定义的printf函数。
+ * @param message 要打印的字符串
+ * @param ... 可变参数.用法同java的System.out.printf函数,
+ * 			以及stdio.h中的printf函数.
+ * 			例如：log_f("hello %d", 1);	//打印"hello 1"
+ * 			不同的是，如需换行，请在message后面加上"\r\n"，如：log_f("hello %d\r\n", 1);
+ * @return void	无返回值
+ */
+*/
+void log_f(const char* message);
 #if _4WD
 void Motion_analysis_transformation(float Encoder_A,float Encoder_B,float Encoder_C,float Encoder_D);
 #elif Omni

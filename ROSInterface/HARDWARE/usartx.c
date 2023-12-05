@@ -680,13 +680,31 @@ u8 Check_Sum(unsigned char Count_Number,unsigned char Mode)
 	}
 	return check_sum;
 }
-
-void log(u8*array, int size){
+/**
+ * 自助debug。
+ * 通过串口向主机发送消息。
+*/
+void log_(u8*array, int size){
 	int i;
 	for(i=0;i<size;i++){
 		usart1_send(*(array+i));
 	}
-	printf("\n");
+}
+
+void log_f(const char* message,...){
+	static TX_BUF_LEN = 256;
+	static uint8_t buffer[TX_BUF_LEN];
+	va_list ap;
+	va_start(ap, message);
+	memset(buffer, 0, TX_BUF_LEN);
+
+	vsnprintf((char*)buffer, TX_BUF_LEN, message, ap);
+	va_end(ap);
+	int len = strlen((const char*)buffer);
+	for(int i = 0; i < len; ++i){
+		while(USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
+		ustra_SendData(USART1, *(buffer+i));
+	}
 }
 
 
