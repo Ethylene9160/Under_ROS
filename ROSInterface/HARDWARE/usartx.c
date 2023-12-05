@@ -125,6 +125,7 @@ Output  : none
 **************************************************************************/
 void USART1_SEND(void)
 {
+	return;
   unsigned char i = 0;	
 	
 	for(i=0; i<24; i++)
@@ -680,7 +681,13 @@ u8 Check_Sum(unsigned char Count_Number,unsigned char Mode)
 	return check_sum;
 }
 
-
+void log(u8*array, int size){
+	int i;
+	for(i=0;i<size;i++){
+		usart1_send(*(array+i));
+	}
+	printf("\n");
+}
 
 
 
