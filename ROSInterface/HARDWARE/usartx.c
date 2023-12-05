@@ -368,28 +368,29 @@ int USART1_IRQHandler(void)
 		
 		if (Count == 11) //Verify the length of the packet //验证数据包的长度
 		{   
-				//OLED_ShowNumber(20,10,5555,5,12);
-				Count=0; //Prepare for the serial port data to be refill into the array //为串口数据重新填入数组做准备
-				if(Receive_Data.buffer[10] == FRAME_TAIL) //Verify the frame tail of the packet //验证数据包的帧尾
-				{
-					//Data exclusionary or bit check calculation, mode 0 is sent data check
-					//数据异或位校验计算，模式0是发送数据校验
-					if(Receive_Data.buffer[9] ==Check_Sum(9,0))
-				  {		
-						//Serial port 1 controls flag position 1, other flag position 0
-						//串口1控制标志位置1，其它标志位置0
-						PS2_ON_Flag=0;
-						Remote_ON_Flag=0;
-						APP_ON_Flag=0;
-						CAN_ON_Flag=0;
-						Usart_ON_Flag=1;
-						command_lost_count=0;//串口、CAN控制命令丢失计数清零
-						//Calculate the target speed of three axis from serial data, unit m/s
-						//从串口数据求三轴目标速度， 单位m/s
-						Move_X=XYZ_Target_Speed_transition(Receive_Data.buffer[3],Receive_Data.buffer[4]);
-						Move_Y=XYZ_Target_Speed_transition(Receive_Data.buffer[5],Receive_Data.buffer[6]);
-						Move_Z=XYZ_Target_Speed_transition(Receive_Data.buffer[7],Receive_Data.buffer[8]);
-				  }
+			//OLED_ShowNumber(20,10,5555,5,12);
+			Count=0; //Prepare for the serial port data to be refill into the array //为串口数据重新填入数组做准备
+			if(Receive_Data.buffer[10] == FRAME_TAIL) //Verify the frame tail of the packet //验证数据包的帧尾
+			{
+				//Data exclusionary or bit check calculation, mode 0 is sent data check
+				//数据异或位校验计算，模式0是发送数据校验
+				//if(Receive_Data.buffer[9] ==Check_Sum(9,0))
+				if(1)
+				{		
+					//Serial port 1 controls flag position 1, other flag position 0
+					//串口1控制标志位置1，其它标志位置0
+					PS2_ON_Flag=0;
+					Remote_ON_Flag=0;
+					APP_ON_Flag=0;
+					CAN_ON_Flag=0;
+					Usart_ON_Flag=1;
+					command_lost_count=0;//串口、CAN控制命令丢失计数清零
+					//Calculate the target speed of three axis from serial data, unit m/s
+					//从串口数据求三轴目标速度， 单位m/s
+					Move_X=XYZ_Target_Speed_transition(Receive_Data.buffer[3],Receive_Data.buffer[4]);
+					Move_Y=XYZ_Target_Speed_transition(Receive_Data.buffer[5],Receive_Data.buffer[6]);
+					Move_Z=XYZ_Target_Speed_transition(Receive_Data.buffer[7],Receive_Data.buffer[8]);
+			  	}
 			}
 		}
 	} 

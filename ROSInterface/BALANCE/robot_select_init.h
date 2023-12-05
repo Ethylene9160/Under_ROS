@@ -19,7 +19,7 @@ typedef struct
 //half wheelspacing //°ëÂÖ¾à
 #define SENIOR_4WD_BS_wheelspacing   0.176 
 //#define SENIOR_4WD_DL_wheelspacing   0.247 
-#define SENIOR_4WD_DL_wheelspacing   0.230
+#define SENIOR_4WD_DL_wheelspacing   0.400//original:0.230
 #define TOP_4WD_BS_wheelspacing      0.311
 #define TOP_4WD_DL_wheelspacing      0.295
 #define FlagShip_4WD_BS_wheelspacing 0.286
@@ -30,7 +30,7 @@ typedef struct
 //#define SENIOR_4WD_BS_axlespacing   0.156
 #define SENIOR_4WD_BS_axlespacing   0.150
 //#define SENIOR_4WD_DL_axlespacing   0.214 
-#define SENIOR_4WD_DL_axlespacing   0.20 
+#define SENIOR_4WD_DL_axlespacing   0.50 //original:0.20
 #define TOP_4WD_BS_axlespacing      0.308
 #define TOP_4WD_DL_axlespacing      0.201
 #define FlagShip_4WD_BS_axlespacing 0.167

@@ -1,8 +1,8 @@
 #ifndef __BALANCE_H
 #define __BALANCE_H		
 
-#define MIN_POWER_VOLTAGE 7	  
-#define MAX_PWN_VALUE 5500
+#define MIN_POWER_VOLTAGE 6 
+#define MAX_PWM_VALUE 5500
 
 #include "sys.h"
 #include "system.h"

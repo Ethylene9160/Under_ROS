@@ -366,8 +366,8 @@ int Incremental_PI_A (float Encoder,float Target)
     static float Bias,Pwm,Last_bias;
     Bias=Target-Encoder; //Calculate the deviation //计算偏差
     Pwm+=Velocity_KP*(Bias-Last_bias)+Velocity_KI*Bias;
-    if(Pwm>16800)Pwm=16800;
-    if(Pwm<-16800)Pwm=-16800;
+    if(Pwm>MAX_PWM_VALUE)Pwm=MAX_PWM_VALUE;
+    if(Pwm<-MAX_PWM_VALUE)Pwm=-MAX_PWM_VALUE;
     Last_bias=Bias; //Save the last deviation //保存上一次偏差
 	
 	//清除PWM标志位，该位为1时代表需要清除PWM
@@ -389,8 +389,8 @@ int Incremental_PI_B (float Encoder,float Target)
     static float Bias,Pwm,Last_bias;
     Bias=Target-Encoder; //Calculate the deviation //计算偏差
     Pwm+=Velocity_KP*(Bias-Last_bias)+Velocity_KI*Bias;
-    if(Pwm>16800)Pwm=16800;
-    if(Pwm<-16800)Pwm=-16800;
+    if(Pwm>MAX_PWM_VALUE)Pwm=MAX_PWM_VALUE;
+    if(Pwm<-MAX_PWM_VALUE)Pwm=-MAX_PWM_VALUE;
     Last_bias=Bias; //Save the last deviation //保存上一次偏差
 	
 	if( start_clear ) 
@@ -409,8 +409,8 @@ int Incremental_PI_C (float Encoder,float Target)
     static float Bias,Pwm,Last_bias;
     Bias=Target-Encoder; //Calculate the deviation //计算偏差
     Pwm+=Velocity_KP*(Bias-Last_bias)+Velocity_KI*Bias;
-    if(Pwm>16800)Pwm=16800;
-    if(Pwm<-16800)Pwm=-16800;
+    if(Pwm>MAX_PWM_VALUE)Pwm=MAX_PWM_VALUE;
+    if(Pwm<-MAX_PWM_VALUE)Pwm=-MAX_PWM_VALUE;
     Last_bias=Bias; //Save the last deviation //保存上一次偏差
 
 	if( start_clear ) 
@@ -431,8 +431,8 @@ int Incremental_PI_D (float Encoder,float Target)
     Pwm+=Velocity_KP*(Bias-Last_bias)+Velocity_KI*Bias;
     // if(Pwm>16800)Pwm=16800;
     // if(Pwm<-16800)Pwm=-16800;
-    if(Pwm>MAX_PWM_VALUE)Pwm=MAX_PWN_VALUE;
-    if(Pwm<-MAX_PWN_VALUE)Pwm=-MAX_PWN_VALUE;
+    if(Pwm>MAX_PWM_VALUE)Pwm=MAX_PWM_VALUE;
+    if(Pwm<-MAX_PWM_VALUE)Pwm=-MAX_PWM_VALUE;
 
     Last_bias=Bias; //Save the last deviation //保存上一次偏差
 	
@@ -796,7 +796,7 @@ void robot_mode_check(void)
 			{
                 
 				times++;
-				//if( times>2 ) robot_mode_check_flag=1,LED_G=0;
+				if( times>2 ) robot_mode_check_flag=1,LED_G=0;
 			}
 			last_a = check_a,last_b = check_b,last_c = check_c,last_d = check_d;
 			
@@ -812,16 +812,16 @@ void robot_mode_check(void)
 		// if(float_abs(MOTOR_D.Motor_Pwm)>5500 && check_d<500) robot_mode_check_flag=1,LED_B=0;
 
         
-		if(float_abs(MOTOR_A.Motor_Pwm)>MAX_PWN_VALUE && check_a<500) robot_mode_check_flag=1,LED_B=0;	
-		if(float_abs(MOTOR_B.Motor_Pwm)>MAX_PWN_VALUE && check_b<500) robot_mode_check_flag=1,LED_B=0;	
-		if(float_abs(MOTOR_C.Motor_Pwm)>MAX_PWN_VALUE && check_c<500) robot_mode_check_flag=1,LED_B=0;
-		if(float_abs(MOTOR_D.Motor_Pwm)>MAX_PWN_VALUE && check_d<500) robot_mode_check_flag=1,LED_B=0;
+		if(float_abs(MOTOR_A.Motor_Pwm)>ERROR_PWM && check_a<500) robot_mode_check_flag=1,LED_B=0;	
+		if(float_abs(MOTOR_B.Motor_Pwm)>ERROR_PWM && check_b<500) robot_mode_check_flag=1,LED_B=0;	
+		if(float_abs(MOTOR_C.Motor_Pwm)>ERROR_PWM && check_c<500) robot_mode_check_flag=1,LED_B=0;
+		if(float_abs(MOTOR_D.Motor_Pwm)>ERROR_PWM && check_d<500) robot_mode_check_flag=1,LED_B=0;
 		
 		//最后防线，正常0.1m/s速度无法到达的PWM数值，错误类型：编码器A、B接反或者C、D接反、或者负载已经超出电机能承受的范围
 		if( float_abs(MOTOR_A.Motor_Pwm)>ERROR_PWM||float_abs(MOTOR_B.Motor_Pwm)>ERROR_PWM||\
 			 float_abs(MOTOR_C.Motor_Pwm)>ERROR_PWM||float_abs(MOTOR_D.Motor_Pwm)>ERROR_PWM )
 		{
-			//robot_mode_check_flag = 1;
+			robot_mode_check_flag = 1;
 			LED_B=1,LED_G=1;
 		}
 		
@@ -832,10 +832,10 @@ void robot_slefcheck(void)
 {
 	if( smooth_control.VX==0&&smooth_control.VZ==0 )
 	{
-		if( MOTOR_A.Motor_Pwm> MAX_PWN_VALUE && MOTOR_B.Motor_Pwm<-MAX_PWN_VALUE ||\
-            MOTOR_A.Motor_Pwm<-MAX_PWN_VALUE && MOTOR_B.Motor_Pwm> MAX_PWN_VALUE ||\
-			MOTOR_C.Motor_Pwm> MAX_PWN_VALUE && MOTOR_D.Motor_Pwm<-MAX_PWN_VALUE ||\
-            MOTOR_C.Motor_Pwm<-MAX_PWN_VALUE && MOTOR_D.Motor_Pwm> MAX_PWN_VALUE  )
+		if( MOTOR_A.Motor_Pwm> MAX_PWM_VALUE && MOTOR_B.Motor_Pwm<-MAX_PWM_VALUE ||\
+            MOTOR_A.Motor_Pwm<-MAX_PWM_VALUE && MOTOR_B.Motor_Pwm> MAX_PWM_VALUE ||\
+			MOTOR_C.Motor_Pwm> MAX_PWM_VALUE && MOTOR_D.Motor_Pwm<-MAX_PWM_VALUE ||\
+            MOTOR_C.Motor_Pwm<-MAX_PWM_VALUE && MOTOR_D.Motor_Pwm> MAX_PWM_VALUE  )
 		{
 			robot_mode_check_flag = 1;
 		}

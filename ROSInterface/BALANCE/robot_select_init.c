@@ -24,7 +24,7 @@ void Robot_Select(void)
 		if (Car_Mode==1)   Robot_Init(SENIOR_4WD_BS_wheelspacing, SENIOR_4WD_BS_axlespacing, MD36N_51, Photoelectric_500, _4WD_152); //SENIOR_4WD_BS      - 高配4驱摆式悬挂重载型  
 		
 		if (Car_Mode==2)   Robot_Init(SENIOR_4WD_DL_wheelspacing, SENIOR_4WD_DL_axlespacing, MD36N_27, Photoelectric_500, _4WD_152); //SENIOR_4WD_DL      - 高配4驱独立悬挂常规型 //DL: Independent suspension 
-		if (Car_Mode==3)   Robot_Init(SENIOR_4WD_DL_wheelspacing, SENIOR_4WD_DL_axlespacing, MD36N_51, Photoelectric_500, _4WD_152); //SENIOR_4WD_DL      - 高配4驱独立悬挂重载型
+		if (Car_Mode==3)   Robot_Init(SENIOR_4WD_DL_wheelspacing, SENIOR_4WD_DL_axlespacing, MD36N_51, Photoelectric_500, _4WD_250); //SENIOR_4WD_DL      - 高配4驱独立悬挂重载型
 		
 		if (Car_Mode==4)   Robot_Init(TOP_4WD_BS_wheelspacing,    TOP_4WD_BS_axlespacing,    MD60N_18, Photoelectric_500, _4WD_225); //TOP_4WD_BS         - 顶配4驱摆式悬挂常规型
 		if (Car_Mode==5)   Robot_Init(TOP_4WD_BS_wheelspacing,    TOP_4WD_BS_axlespacing,    MD60N_47, Photoelectric_500, _4WD_225); //TOP_4WD_BS         - 顶配4驱摆式悬挂重载型
