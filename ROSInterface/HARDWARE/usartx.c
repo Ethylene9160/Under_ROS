@@ -125,7 +125,6 @@ Output  : none
 **************************************************************************/
 void USART1_SEND(void)
 {
-	return;
   unsigned char i = 0;	
 	
 	for(i=0; i<24; i++)
@@ -692,8 +691,9 @@ void log_(u8*array, int size){
 }
 
 void log_f(const char* message,...){
-	static TX_BUF_LEN = 256;
-	static uint8_t buffer[TX_BUF_LEN];
+	static int TX_BUF_LEN = 256;
+	uint8_t buffer[TX_BUF_LEN];
+	int i;
 	va_list ap;
 	va_start(ap, message);
 	memset(buffer, 0, TX_BUF_LEN);
@@ -701,9 +701,9 @@ void log_f(const char* message,...){
 	vsnprintf((char*)buffer, TX_BUF_LEN, message, ap);
 	va_end(ap);
 	int len = strlen((const char*)buffer);
-	for(int i = 0; i < len; ++i){
+	for(i = 0; i < len; ++i){
 		while(USART_GetFlagStatus(USART1, USART_FLAG_TC) == RESET);
-		ustra_SendData(USART1, *(buffer+i));
+		USART_SendData(USART1, *(buffer+i));
 	}
 }
 
